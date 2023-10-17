@@ -1,7 +1,6 @@
 ﻿using EShop.Catalog.Application.Common.Interfaces;
 using EShop.Catalog.Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Catalog.Application.Categories.Commands.AddCategory
 {
@@ -33,10 +32,6 @@ namespace EShop.Catalog.Application.Categories.Commands.AddCategory
 
             await _context.Categories.AddAsync(category, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-
-
-            var test= _context.Categories.ToList();
-            ;
         }
     }
 }
