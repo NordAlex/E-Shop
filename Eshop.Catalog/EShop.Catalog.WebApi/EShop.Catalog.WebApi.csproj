@@ -11,8 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EShop.Carting.Application\EShop.Catalog.Application.csproj" />
-    <ProjectReference Include="..\EShop.Carting.Infrastructure\EShop.Catalog.Infrastructure.csproj" />
     <ProjectReference Include="..\EShop.Catalog.Application\EShop.Catalog.Application.csproj" />
     <ProjectReference Include="..\EShop.Catalog.Infrastructure\EShop.Catalog.Infrastructure.csproj" />
   </ItemGroup>
