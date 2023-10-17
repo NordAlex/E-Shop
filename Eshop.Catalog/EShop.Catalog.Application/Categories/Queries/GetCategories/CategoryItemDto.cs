@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EShop.Catalog.Application.Categories.Queries.GetCategories
+﻿namespace EShop.Catalog.Application.Categories.Queries.GetCategories
 {
     public class CategoryItemDto
     {
