@@ -1,16 +1,19 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using EShop.Catalog.Application.Common.Interfaces;
+using EShop.Catalog.Application.Common.Mapping;
+using EShop.Catalog.Application.Common.Models;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Catalog.Application.Items.Queries.GetItems
 {
-    public record GetItemsListQuery : IRequest<List<ItemDto>>
+    public record GetItemsListQuery : IRequest<PaginatedList<ItemDto>>
     {
-        public int[] Id { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 30;
     }
 
-    public class GetItemsListQueryHandler : IRequestHandler<GetItemsListQuery, List<ItemDto>>
+    public class GetItemsListQueryHandler : IRequestHandler<GetItemsListQuery, PaginatedList<ItemDto>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -21,11 +24,13 @@ namespace EShop.Catalog.Application.Items.Queries.GetItems
             _mapper = mapper;
         }
 
-        public async Task<List<ItemDto>> Handle(GetItemsListQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<ItemDto>> Handle(GetItemsListQuery request, CancellationToken cancellationToken)
         {
-            var items = await _context.Items.Where(x => request.Id.Contains(x.Id))
-                .ToListAsync(cancellationToken: cancellationToken);
-            return items.Select(x => _mapper.Map<ItemDto>(x)).ToList();
+            var items = await _context.Items
+                .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(request.PageNumber, request.PageSize);
+
+            return items;
         }
     }
 }

@@ -10,10 +10,9 @@ namespace EShop.Catalog.Application.Items.Commands.CreateItem
         public int CategoryId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public decimal Price { get; set; }
-        public string Image { get; set; }
-        public string Category { get; set; }
-        public int Amount { get; set; }
+        public decimal Price { get; set; } = 0;
+        public string? Image { get; set; } = null;
+        public int Amount { get; set; } = 1;
     }
 
     public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand>

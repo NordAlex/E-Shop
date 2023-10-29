@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using AutoMapper;
 using EShop.Catalog.Application;
 using EShop.Catalog.Application.Common.Mapping;
@@ -12,8 +13,29 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
+
+builder.Services
+    .AddApiVersioning()
+    .AddApiExplorer(options =>
+    {
+        // Add the versioned API explorer, which also adds IApiVersionDescriptionProvider service
+        // note: the specified format code will format the version as "'v'major[.minor][-status]"
+        options.GroupNameFormat = "'v'VVV";
+
+        // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
+        // can also be used to control the format of the API version in route templates
+        options.SubstituteApiVersionInUrl = true;
+
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+
+        //indicating whether a default version is assumed when a client does
+        // does not provide an API version.
+        options.AssumeDefaultVersionWhenUnspecified = true;
+    });
 
 var mapperConfig = new MapperConfiguration(mc =>
 {
