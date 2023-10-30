@@ -7,7 +7,7 @@ namespace EShop.Carting.Application.CartItems.Commands.RemoveCartItem
 {
     public record RemoveCartItemCommand : IRequest
     {
-        public int CartId { get; set; }
+        public string CartId { get; set; }
         public int ItemId { get; set; }
     }
 

@@ -4,7 +4,7 @@ namespace EShop.Carting.Domain.Entities
 {
     public class CartItem : BaseEntity
     {
-        public int CartId { get; set; }
+        public string CartId { get; set; }
         public int ItemId { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }

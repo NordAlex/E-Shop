@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EShop.Carting.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ApiControllerBase : ControllerBase
     {
         private ISender? _mediator;

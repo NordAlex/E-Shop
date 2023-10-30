@@ -1,15 +1,17 @@
 ﻿using EShop.Carting.Application.Common.Interfaces;
 using EShop.Carting.Domain.Entities;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace EShop.Carting.Application.CartItems.Commands.AddCartItem
 {
     public record AddCartItemCommand : IRequest
     {
-        public int CartId { get; set; }
+        [Required]
+        public string CartId { get; set; }
         public int ItemId { get; set; }
-        public string Name { get; set; }
-        public string ImageUrl { get; set; }
+        public string? Name { get; set; }
+        public string? ImageUrl { get; set; }
         public decimal Price { get; set; }
     }
 

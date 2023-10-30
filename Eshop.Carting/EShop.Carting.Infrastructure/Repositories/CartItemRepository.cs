@@ -11,7 +11,7 @@ namespace EShop.Carting.Infrastructure.Repositories
         {
         }
 
-        public List<CartItem> GetCartItems(int cartId)
+        public List<CartItem> GetCartItems(string cartId)
         {
             var cartItems = Query<CartItem>().Where(x => x.CartId == cartId);
             return cartItems.ToList();

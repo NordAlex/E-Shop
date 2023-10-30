@@ -1,8 +1,13 @@
-﻿namespace EShop.Carting.Application.CartItems.Queries.GetCartItems
+﻿namespace EShop.Carting.Application.CartItems.Queries.GetCartInfo
 {
-    public class CartItemDto 
+    public class CartInfoDto
     {
         public string Id { get; set; }
+        public List<CartInfoItemDto> Items { get; set; }
+    }
+
+    public class CartInfoItemDto
+    {
         public int ItemId { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
