@@ -3,6 +3,7 @@ using AutoMapper;
 using EShop.Catalog.Application;
 using EShop.Catalog.Application.Common.Mapping;
 using EShop.Catalog.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,8 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
+
+builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressInferBindingSourcesForParameters = true);
 
 builder.Services
     .AddApiVersioning()

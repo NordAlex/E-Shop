@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using EShop.Catalog.Application.Categories.Queries.GetCategories;
 using EShop.Catalog.Application.Items.Commands.CreateItem;
 using EShop.Catalog.Application.Items.Commands.DeleteItem;
 using EShop.Catalog.Application.Items.Commands.UpdateItem;
