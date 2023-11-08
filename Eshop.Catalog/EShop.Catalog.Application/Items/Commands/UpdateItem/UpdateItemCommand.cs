@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EShop.Catalog.Application.Common.Interfaces;
+using EShop.Catalog.Application.Messaging.Items;
 using MediatR;
 
 namespace EShop.Catalog.Application.Items.Commands.UpdateItem
@@ -20,23 +21,27 @@ namespace EShop.Catalog.Application.Items.Commands.UpdateItem
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IItemServiceBus _itemServiceBus;
 
-        public UpdateItemCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public UpdateItemCommandHandler(IApplicationDbContext context, IMapper mapper, IItemServiceBus itemServiceBus)
         {
+            _itemServiceBus = itemServiceBus;
             _context = context;
             _mapper = mapper;
         }
 
         public async Task Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
-            var category = await _context.Categories.FindAsync(request.Id, cancellationToken);
-            if (category != null)
+            var item = await _context.Items.FindAsync(request.Id, cancellationToken);
+            if (item != null)
             {
-                _mapper.Map(request, category);
+                _mapper.Map(request, item);
 
-                _context.Categories.Update(category);
+                _context.Items.Update(item);
 
                 await _context.SaveChangesAsync(cancellationToken);
+
+                await _itemServiceBus.SendUpdatedItemAsync(item);
             }
         }
     }
