@@ -1,23 +1,15 @@
-﻿{
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:18718",
-      "sslPort": 44367
-    }
-  },
+{
   "profiles": {
     "EShop.Carting.WebApi": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7117;http://localhost:5056",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AZURE_TENANT_ID": "b805c370-fbfe-4ef6-a939-307210acd1b9"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7118;http://localhost:5057"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -26,6 +18,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:18718",
+      "sslPort": 44367
     }
   }
 }

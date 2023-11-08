@@ -17,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressInferBindingSourcesForParameters = true);
 

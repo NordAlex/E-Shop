@@ -8,5 +8,6 @@ namespace EShop.Carting.Application.Common.Interfaces
         public int Insert(T item);
         public bool Update(T item);
         public bool Delete(T item);
+        public int Update(IEnumerable<T> items);
     }
 }

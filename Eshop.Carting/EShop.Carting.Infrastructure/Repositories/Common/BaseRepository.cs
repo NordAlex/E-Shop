@@ -14,5 +14,6 @@ namespace EShop.Carting.Infrastructure.Repositories.Common
         public int Insert(T item) => Insert<T>(item, null);
         public bool Update(T item) => Update(item, null);
         public bool Delete(T item) => Delete<T>(new BsonValue(item.Id), null);
+        public int Update(IEnumerable<T> items) => Update(items, null);
     }
 }
