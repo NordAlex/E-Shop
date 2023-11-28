@@ -5,14 +5,17 @@ using EShop.Catalog.Application.Categories.Commands.UpdateCategory;
 using EShop.Catalog.Application.Categories.Queries.GetCategories;
 using EShop.Catalog.Application.Categories.Queries.GetCategory;
 using EShop.Catalog.Application.Common.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EShop.Catalog.WebApi.Controllers
 {
     [ApiVersion("1.0")]
+    [Authorize(Roles = "Buyer")]
     public class CategoryController : ApiControllerBase
     {
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
@@ -23,6 +26,7 @@ namespace EShop.Catalog.WebApi.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
@@ -33,6 +37,7 @@ namespace EShop.Catalog.WebApi.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
