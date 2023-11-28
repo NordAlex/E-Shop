@@ -100,14 +100,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {    
     app.UseSwagger();
-    app.UseSwaggerUI(setup =>
-    {
-        //setup.SwaggerEndpoint($"/swagger/v1/swagger.json", "Version 1.0");
-        setup.OAuthClientId("e82530ef-8e13-45c9-a4ad-7d0ef7400065");
-        setup.OAuthAppName("Test API");
-        setup.OAuthScopeSeparator(" ");
-        setup.OAuthUsePkce();
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
