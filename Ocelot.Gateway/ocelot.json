@@ -1,0 +1,72 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/{version}/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "cart",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7118
+        }
+      ],
+      "UpstreamPathTemplate": "/api/basket/{version}/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{version}/{everything}",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "catalog",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7117
+        }
+      ],
+      "UpstreamPathTemplate": "/api/catalog/{version}/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Post", "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/todos/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "jsonplaceholder.typicode.com",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/todos/{id}",
+      "UpstreamHttpMethod": [ "Get" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7182/"
+  },
+  "SwaggerEndPoints": [
+    {
+      "Key": "cart",
+      "Config": [
+        {
+          "Name": "Cart API",
+          "Version": "v1",
+          "Url": "https://localhost:7118/swagger/v1/swagger.json"
+        },
+        {
+          "Name": "Cart API",
+          "Version": "v2",
+          "Url": "https://localhost:7118/swagger/v2/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "catalog",
+      "Config": [
+        {
+          "Name": "Catalog API",
+          "Version": "v1",
+          "Url": "https://localhost:7117/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}
