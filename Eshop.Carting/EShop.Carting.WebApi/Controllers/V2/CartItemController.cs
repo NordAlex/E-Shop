@@ -1,14 +1,14 @@
 ﻿using Asp.Versioning;
 using EShop.Carting.Application.CartItems.Queries.GetCartItems;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 
 namespace EShop.Carting.WebApi.Controllers.V2
 {
     [ApiVersion(2.0)]
+    [Route("api/v{version:apiVersion}/cart")]
     public class CartItemController : ApiControllerBase
     {
-        [HttpGet("/api/v{version:apiVersion}/cart")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
