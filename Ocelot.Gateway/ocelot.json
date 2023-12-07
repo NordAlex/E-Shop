@@ -1,17 +1,33 @@
 {
   "Routes": [
+
     {
-      "DownstreamPathTemplate": "/api/{version}/{everything}",
+      "DownstreamPathTemplate": "/api/v2/category",
       "DownstreamScheme": "https",
-      "SwaggerKey": "cart",
+      "SwaggerKey": "catalog",
+      "Key": "categoryDetails",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 7118
+          "Port": 7117
         }
       ],
-      "UpstreamPathTemplate": "/api/basket/{version}/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Delete", "Post" ]
+      "UpstreamPathTemplate": "/api/catalog/{version}/category",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Post", "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/v2/category/properties",
+      "DownstreamScheme": "https",
+      "SwaggerKey": "catalog",
+      "Key": "property",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7117
+        }
+      ],
+      "UpstreamPathTemplate": "/api/catalog/{version}/category/properties",
+      "UpstreamHttpMethod": [ "Get" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/{everything}",
@@ -27,18 +43,30 @@
       "UpstreamHttpMethod": [ "Get", "Delete", "Post", "Put" ]
     },
     {
-      "DownstreamPathTemplate": "/todos/{id}",
+      "DownstreamPathTemplate": "/api/{version}/{everything}",
       "DownstreamScheme": "https",
+      "SwaggerKey": "cart",
       "DownstreamHostAndPorts": [
         {
-          "Host": "jsonplaceholder.typicode.com",
-          "Port": 443
+          "Host": "localhost",
+          "Port": 7118
         }
       ],
-      "UpstreamPathTemplate": "/todos/{id}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamPathTemplate": "/api/basket/{version}/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Delete", "Post" ]
+    }
+
+  ],
+  "Aggregates": [
+    {
+      "UpstreamPathTemplate": "/api/category-details",
+      "RouteKeys": [
+        "property",
+        "categoryDetails"
+      ]
     }
   ],
+
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:7182/"
   },
@@ -65,6 +93,12 @@
           "Name": "Catalog API",
           "Version": "v1",
           "Url": "https://localhost:7117/swagger/v1/swagger.json"
+        },
+
+        {
+          "Name": "Catalog API",
+          "Version": "v2",
+          "Url": "https://localhost:7117/swagger/v2/swagger.json"
         }
       ]
     }

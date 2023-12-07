@@ -1,7 +1,6 @@
-using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
-using Ocelot.Values;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,9 +16,52 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 builder.Services.AddOcelot(configuration);
 
+builder.Services.AddSwaggerGen((options) =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+});
+
 builder.Services.AddSwaggerForOcelot(configuration, (o) =>
 {
-    o.GenerateDocsForGatewayItSelf = true;
+    o.GenerateDocsForAggregates = true;
+    o.GenerateDocsForGatewayItSelf = true; 
+    
+    o.AggregateDocsGeneratorPostProcess = (aggregateRoute, routesDocs, pathItemDoc, documentation) =>
+    {
+
+        documentation.SecurityRequirements.Add(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[]{}
+            }
+        });
+
+        if (aggregateRoute.UpstreamPathTemplate == "/api/category-details")
+        {
+            pathItemDoc.Operations[OperationType.Get].Parameters.Add(new OpenApiParameter()
+            {
+                Name = "id",
+                Schema = new OpenApiSchema() { Type = "int" },
+                In = ParameterLocation.Query
+            });
+        }
+    };
 });
 
 var app = builder.Build();
