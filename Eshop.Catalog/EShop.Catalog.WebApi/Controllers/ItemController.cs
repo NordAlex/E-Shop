@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace EShop.Catalog.WebApi.Controllers
 {
     [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Authorize(Roles = "Buyer")]
     public class ItemController : ApiControllerBase
     {

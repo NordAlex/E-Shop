@@ -1,8 +1,10 @@
 using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using AutoMapper;
 using EShop.Catalog.Application;
 using EShop.Catalog.Application.Common.Mapping;
 using EShop.Catalog.Infrastructure;
+using EShop.Catalog.WebApi.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -16,34 +18,27 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen(opt =>
-{
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+builder.Services.AddSwaggerGen();
+
+builder.Services
+    .AddApiVersioning()
+    .AddApiExplorer(options =>
     {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
+        // Add the versioned API explorer, which also adds IApiVersionDescriptionProvider service
+        // note: the specified format code will format the version as "'v'major[.minor][-status]"
+        options.GroupNameFormat = "'v'VVV";
+
+        // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
+        // can also be used to control the format of the API version in route templates
+        options.SubstituteApiVersionInUrl = true;
+
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+
+        //indicating whether a default version is assumed when a client does
+        // does not provide an API version.
+        options.AssumeDefaultVersionWhenUnspecified = true;
     });
 
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
-});
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
@@ -59,9 +54,9 @@ builder.Services.AddAuthentication("Bearer")
             NameClaimType = "name", //rename name claim for easier access
             RoleClaimType = "role", //rename role claim for easier access
         };
-
-
     });
+
+builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
@@ -98,9 +93,18 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{    
+{
+    var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName.ToUpperInvariant());
+        }
+    });
 }
 
 app.UseHttpsRedirection();
