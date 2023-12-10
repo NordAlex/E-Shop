@@ -3,11 +3,14 @@ using Asp.Versioning.ApiExplorer;
 using AutoMapper;
 using EShop.Catalog.Application;
 using EShop.Catalog.Application.Common.Mapping;
+using EShop.Catalog.Application.Providers;
 using EShop.Catalog.Infrastructure;
+using EShop.Catalog.WebApi.Filters;
+using EShop.Catalog.WebApi.Middleware;
+using EShop.Catalog.WebApi.Provider;
 using EShop.Catalog.WebApi.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,26 +21,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
-
-builder.Services
-    .AddApiVersioning()
-    .AddApiExplorer(options =>
-    {
-        // Add the versioned API explorer, which also adds IApiVersionDescriptionProvider service
-        // note: the specified format code will format the version as "'v'major[.minor][-status]"
-        options.GroupNameFormat = "'v'VVV";
-
-        // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
-        // can also be used to control the format of the API version in route templates
-        options.SubstituteApiVersionInUrl = true;
-
-        options.DefaultApiVersion = new ApiVersion(1, 0);
-
-        //indicating whether a default version is assumed when a client does
-        // does not provide an API version.
-        options.AssumeDefaultVersionWhenUnspecified = true;
-    });
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<CorrelationIdFilter>();
+});
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -61,6 +48,9 @@ builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressInferBindingSourcesForParameters = true);
+
+builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddScoped<ICorrelationIdProvider, CorrelationIdImp>();
 
 builder.Services
     .AddApiVersioning()
@@ -90,6 +80,8 @@ IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
