@@ -4,10 +4,15 @@ using AutoMapper;
 using EShop.Carting.Application;
 using EShop.Carting.Application.Common.Mapping;
 using EShop.Carting.Infrastructure;
+using EShop.Carting.WebApi.Filters;
+using EShop.Carting.WebApi.Middleware;
+using EShop.Carting.WebApi.Provider;
 using EShop.Carting.WebApi.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +22,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<CorrelationIdFilter>();
+});
 
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 builder.Services.AddAuthentication("Bearer")
@@ -41,8 +49,9 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
-
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressInferBindingSourcesForParameters = true);
+builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddScoped<ICorrelationIdProvider, CorrelationIdImp>();
 
 builder.Services
     .AddApiVersioning()
@@ -75,6 +84,7 @@ builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
