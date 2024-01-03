@@ -5,9 +5,12 @@ using EShop.Catalog.Application;
 using EShop.Catalog.Application.Common.Mapping;
 using EShop.Catalog.Application.Providers;
 using EShop.Catalog.Infrastructure;
+using EShop.Catalog.Infrastructure.Persistence;
 using EShop.Catalog.WebApi.Filters;
 using EShop.Catalog.WebApi.Middleware;
+using EShop.Catalog.WebApi.Mutations;
 using EShop.Catalog.WebApi.Provider;
+using EShop.Catalog.WebApi.Queries;
 using EShop.Catalog.WebApi.Swagger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -78,8 +81,16 @@ var mapperConfig = new MapperConfiguration(mc =>
 
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
+builder.Services
+    .AddGraphQLServer()
+    .AddAuthorization()
+    .RegisterDbContext<ApplicationDbContext>()
+    .AddMutationType<Mutation>()
+    .AddQueryType<Query>();
 
 var app = builder.Build();
+
+app.MapGraphQL();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
 
