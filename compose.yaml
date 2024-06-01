@@ -1,0 +1,17 @@
+services:  
+  catalog-api:
+    build:
+      context: Eshop.Catalog
+      dockerfile: Eshop.Catalog.WebApi/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 7117:7117
+  cart-api:  
+    build:
+      context: Eshop.Carting
+      dockerfile: Eshop.Carting.WebApi/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 7118:7118
