@@ -25,8 +25,13 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
+      - name: Build tests
+        shell: bash
+        run: |
+            set -e
+            for proj in $(find . -name '*Tests.csproj' -o -name '*Test.csproj'); do
+              dotnet build "$proj" --configuration Release --no-restore
+            done
 
       - name: Test (discover all *Tests.csproj)
         shell: bash
