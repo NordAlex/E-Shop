@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  pr-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: dotnet build
 
-      - name: Build & run tests
+      - name: Test
         shell: bash
         run: |
             set -e
