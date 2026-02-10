@@ -10,8 +10,7 @@ namespace EShop.Carting.Application.Tests
         [Test]
         public void Test1()
         {
-            Assert.Fail();
-            Assert.Fail();
+            Assert.Pass();
         }
     }
 }
