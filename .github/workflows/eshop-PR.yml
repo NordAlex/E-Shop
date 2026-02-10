@@ -25,8 +25,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       
-      - name Build
-        run dotnet build
+      - name: Build
+        run: dotnet build
 
       - name: Build & run tests
         shell: bash
