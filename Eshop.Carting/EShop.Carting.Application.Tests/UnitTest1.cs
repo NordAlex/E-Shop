@@ -11,6 +11,7 @@ namespace EShop.Carting.Application.Tests
         public void Test1()
         {
             Assert.Fail();
+            Assert.Fail();
         }
     }
 }
