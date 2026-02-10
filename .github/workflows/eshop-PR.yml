@@ -24,20 +24,17 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
+      
+      - name Build
+        run dotnet build
 
-      - name: Build tests
+      - name: Build & run tests
         shell: bash
         run: |
             set -e
             for proj in $(find . -name '*Tests.csproj' -o -name '*Test.csproj'); do
+              dotnet restore "$proj"
               dotnet build "$proj" --configuration Release --no-restore
-            done
-
-      - name: Test (discover all *Tests.csproj)
-        shell: bash
-        run: |
-            set -e
-            for proj in $(find . -name '*Tests.csproj' -o -name '*Test.csproj'); do
-              echo "Testing $proj"
               dotnet test "$proj" --configuration Release --no-build --verbosity normal
+              echo "Testing $proj"
             done
