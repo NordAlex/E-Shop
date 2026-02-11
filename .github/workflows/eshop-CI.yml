@@ -52,10 +52,10 @@ jobs:
       strategy:
         matrix:
           service:
-            - { name: carting,  dockerfile: Eshop.Carting/EShop.Carting.WebApi/Dockerfile,  context: . }
-            - { name: catalog,  dockerfile: Eshop.Catalog/EShop.Catalog.WebApi/Dockerfile,  context: . }
-            - { name: identity, dockerfile: Identity/Dockerfile,      context: . }
-            - { name: gateway,  dockerfile: Ocelot.Gateway/Dockerfile, context: . }  
+            - { name: carting,  dockerfile: Eshop.Carting/EShop.Carting.WebApi/Dockerfile,  context: Eshop.Carting }
+            - { name: catalog,  dockerfile: Eshop.Catalog/EShop.Catalog.WebApi/Dockerfile,  context:  Eshop.Catalog }
+            - { name: identity, dockerfile: Identity/Dockerfile,      context: Identity }
+            - { name: gateway,  dockerfile: Ocelot.Gateway/Dockerfile, context: Ocelot.Gateway }  
 
       steps:
         - name: Checkout
