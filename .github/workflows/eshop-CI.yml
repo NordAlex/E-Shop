@@ -51,7 +51,7 @@ jobs:
 
       strategy:
         matrix:
-          svc:
+          service:
             - { name: carting,  dockerfile: Eshop.Carting/EShop.Carting.WebApi/Dockerfile,  context: . }
             - { name: catalog,  dockerfile: Eshop.Catalog/EShop.Catalog.WebApi/Dockerfile,  context: . }
             - { name: identity, dockerfile: Identity/Dockerfile,      context: . }
