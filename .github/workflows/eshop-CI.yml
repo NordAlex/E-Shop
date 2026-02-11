@@ -1,0 +1,25 @@
+name: Eshop-CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+      - run: dotnet restore
+      - run: dotnet build --no-restore
+      - shell: bash
+        run: |
+            set -e
+            for proj in $(find . -name '*Tests.csproj' -o -name '*Test.csproj'); do
+              dotnet restore "$proj"
+              dotnet build "$proj" --configuration Release --no-restore
+              dotnet test "$proj" --configuration Release --no-build --verbosity normal
+              echo "Testing $proj"
+            done
