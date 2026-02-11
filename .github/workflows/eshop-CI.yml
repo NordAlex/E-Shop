@@ -40,7 +40,7 @@ jobs:
                 dotnet test "$proj" --configuration Release --no-build --verbosity normal
                 echo "Testing $proj"
               done
-              
+
     build-images:
       name: Build Docker images
       needs: tests  
@@ -52,8 +52,8 @@ jobs:
       strategy:
         matrix:
           svc:
-            - { name: carting,  dockerfile: Eshop.Carting/Dockerfile,  context: . }
-            - { name: catalog,  dockerfile: Eshop.Catalog/Dockerfile,  context: . }
+            - { name: carting,  dockerfile: Eshop.Carting/EShop.Carting.WebApi/Dockerfile,  context: . }
+            - { name: catalog,  dockerfile: Eshop.Catalog/EShop.Catalog.WebApi/Dockerfile,  context: . }
             - { name: identity, dockerfile: Identity/Dockerfile,      context: . }
             - { name: gateway,  dockerfile: Ocelot.Gateway/Dockerfile, context: . }  
 
