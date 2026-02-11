@@ -3,23 +3,70 @@ name: Eshop-CI
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  build-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '6.0.x'
-      - run: dotnet restore
-      - run: dotnet build --no-restore
-      - shell: bash
-        run: |
-            set -e
-            for proj in $(find . -name '*Tests.csproj' -o -name '*Test.csproj'); do
-              dotnet restore "$proj"
-              dotnet build "$proj" --configuration Release --no-restore
-              dotnet test "$proj" --configuration Release --no-build --verbosity normal
-              echo "Testing $proj"
-            done
+    tests:
+      name: Run tests
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: 8.0.x
+            
+        - name: Setup .NET 6 (for net6.0 tests)
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: 6.0.x
+
+        - name: Restore dependencies
+          run: dotnet restore
+        
+        - name: Build
+          run: dotnet build
+
+        - name: Test
+          shell: bash
+          run: |
+              set -e
+              for proj in $(find . -name '*Tests.csproj' -o -name '*Test.csproj'); do
+                dotnet restore "$proj"
+                dotnet build "$proj" --configuration Release --no-restore
+                dotnet test "$proj" --configuration Release --no-build --verbosity normal
+                echo "Testing $proj"
+              done
+              
+    build-images:
+      name: Build Docker images
+      needs: tests  
+      runs-on: ubuntu-latest    
+      permissions:
+        contents: read
+        packages: write
+
+      strategy:
+        matrix:
+          svc:
+            - { name: carting,  dockerfile: Eshop.Carting/Dockerfile,  context: . }
+            - { name: catalog,  dockerfile: Eshop.Catalog/Dockerfile,  context: . }
+            - { name: identity, dockerfile: Identity/Dockerfile,      context: . }
+            - { name: gateway,  dockerfile: Ocelot.Gateway/Dockerfile, context: . }  
+
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Build image
+          run: |
+            docker build \
+              -t ${{ matrix.service.name }}:ci \
+              -f ${{ matrix.service.dockerfile }} \
+              ${{ matrix.service.context }}
