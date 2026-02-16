@@ -1,0 +1,43 @@
+name: Eshop-CD
+
+on:
+  workflow_run:
+    workflows: ["Eshop-CI"]
+    types:
+      - completed
+
+jobs:
+    deploy:
+      name: Deploy to Azure Container Apps
+      runs-on: ubuntu-latest
+
+      strategy:
+        matrix:
+          service:
+            - { name: carting, app: carting-app }
+            - { name: catalog, app:  catalog-app }
+            - { name: identity, app: identity-server }
+            - { name: gateway, app: ocelot-gateway }  
+
+      steps:
+        - name: Convert owner to lowercase
+          id: repo
+          run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+        - name: Azure login
+          uses: azure/login@v2
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        - name: Update Container App image
+          uses: azure/CLI@v2
+          with:
+            inlineScript: |
+              az config set extension.use_dynamic_install=yes_without_prompt
+
+              IMAGE="ghcr.io/${{ steps.repo.outputs.owner }}/e-shop/${{ matrix.service.name }}:sha-${{ github.sha }}"
+
+              az containerapp update \
+                --name "${{ matrix.service.app }}" \
+                --resource-group "${{ secrets.RESOURCE_GROUP }}" \
+                --image "$IMAGE"
