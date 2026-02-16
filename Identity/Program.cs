@@ -1,4 +1,6 @@
-﻿using Identity;
+﻿using Azure.Identity;
+using Identity;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -15,6 +17,22 @@ try
         .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
         .Enrich.FromLogContext()
         .ReadFrom.Configuration(ctx.Configuration));
+
+    builder.Host.ConfigureAppConfiguration((context, config) =>
+    {
+        if (context.HostingEnvironment.IsDevelopment())
+            return;
+
+        var built = config.Build();
+        var endpoint = built["AppConfig:ConfigurationManager:Endpoint"];
+        if (string.IsNullOrWhiteSpace(endpoint))
+            return;
+
+        config.AddAzureAppConfiguration(o =>
+            o.Connect(new Uri(endpoint), new DefaultAzureCredential())
+             .Select("IdentityServer:*")
+        );
+    });
 
     var app = builder
         .ConfigureServices()
