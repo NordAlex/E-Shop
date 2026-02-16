@@ -7,7 +7,7 @@ EXPOSE 443
 ENV ASPNETCORE_URLS=http://*:7118
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-ARG BUILD_CONFIGURATION=Debug
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["EShop.Carting.WebApi/EShop.Carting.WebApi.csproj", "EShop.Carting.WebApi/"]
 COPY ["EShop.Carting.Application/EShop.Carting.Application.csproj", "EShop.Carting.Application/"]
@@ -19,7 +19,7 @@ WORKDIR "/src/EShop.Carting.WebApi"
 RUN dotnet build "./EShop.Carting.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Debug
+ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./EShop.Carting.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
 FROM base AS final

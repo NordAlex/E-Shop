@@ -7,7 +7,7 @@ EXPOSE 443
 ENV ASPNETCORE_URLS=http://*:7117
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-ARG BUILD_CONFIGURATION=Debug
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["EShop.Catalog.WebApi/EShop.Catalog.WebApi.csproj", "EShop.Catalog.WebApi/"]
 COPY ["EShop.Catalog.Application/EShop.Catalog.Application.csproj", "EShop.Catalog.Application/"]
@@ -19,7 +19,7 @@ WORKDIR "/src/EShop.Catalog.WebApi"
 RUN dotnet build "./EShop.Catalog.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Debug
+ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./EShop.Catalog.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final

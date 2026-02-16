@@ -7,7 +7,7 @@ EXPOSE 443
 ENV ASPNETCORE_URLS=http://*:5001
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-ARG BUILD_CONFIGURATION=Debug
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Identity.csproj", "."]
 RUN dotnet restore "./././Identity.csproj"
@@ -16,7 +16,7 @@ WORKDIR "/src/."
 RUN dotnet build "./Identity.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Debug
+ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./Identity.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
