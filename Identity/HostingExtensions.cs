@@ -67,11 +67,11 @@ namespace Identity
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             };
 
-            app.UseForwardedHeaders(fh);
-
             // container/proxy: accept forwarded headers from anywhere
             fh.KnownNetworks.Clear();
             fh.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(fh);
 
 
             app.UseSerilogRequestLogging();
