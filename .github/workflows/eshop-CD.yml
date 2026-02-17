@@ -40,5 +40,5 @@ jobs:
 
               az containerapp update \
                 --name "${{ matrix.service.app }}" \
-                --resource-group "${{ secrets.RESOURCE_GROUP }}" \
+                --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
                 --image "$IMAGE"
