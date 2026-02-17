@@ -14,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
+using Azure.Identity;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,10 +30,28 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
+builder.Host.ConfigureAppConfiguration((context, config) =>
+{
+    if (context.HostingEnvironment.IsDevelopment())
+        return;
+
+    var built = config.Build();
+    var endpoint = built["ConfigurationManager:Endpoint"];
+    if (string.IsNullOrWhiteSpace(endpoint))
+        return;
+
+    config.AddAzureAppConfiguration(o =>
+        o.Connect(new Uri(endpoint), new DefaultAzureCredential())
+            .Select("Carting:*")
+            .TrimKeyPrefix("Carting:")
+    );
+});
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        options.Authority = "https://localhost:5001/";
+        options.Authority = builder.Configuration["Authority:Endpoint"];
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = false,
