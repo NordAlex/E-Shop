@@ -24,13 +24,14 @@ try
             return;
 
         var built = config.Build();
-        var endpoint = built["AppConfig:ConfigurationManager:Endpoint"];
+        var endpoint = built["ConfigurationManager:Endpoint"];
         if (string.IsNullOrWhiteSpace(endpoint))
             return;
 
         config.AddAzureAppConfiguration(o =>
             o.Connect(new Uri(endpoint), new DefaultAzureCredential())
              .Select("IdentityServer:*")
+             .TrimKeyPrefix("IdentityServer:")
         );
     });
 
