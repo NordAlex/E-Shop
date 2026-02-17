@@ -12,6 +12,7 @@ jobs:
       runs-on: ubuntu-latest
 
       strategy:
+        fail-fast: false
         matrix:
           service:
             - { name: carting, app: carting-app }
