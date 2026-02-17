@@ -1,5 +1,6 @@
 using Duende.IdentityServer;
 using Identity;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Serilog;
 
@@ -61,6 +62,18 @@ namespace Identity
 
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
+            var fh = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+
+            app.UseForwardedHeaders(fh);
+
+            // container/proxy: accept forwarded headers from anywhere
+            fh.KnownNetworks.Clear();
+            fh.KnownProxies.Clear();
+
+
             app.UseSerilogRequestLogging();
 
             if (app.Environment.IsDevelopment())
